@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civil Service Exam Flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e8f5e9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        .home-card {
+            background: #c8e6c9;
+            border: 2px solid #81c784;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .cat-icon {
+            font-size: 120px;
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        .home-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 16px;
+        }
+
+        .home-subtitle {
+            font-size: 1.25rem;
+            color: #388e3c;
+            margin-bottom: 32px;
+        }
+
+        .category-buttons {
+            display: grid;
+            gap: 16px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .category-btn {
+            background: #66bb6a;
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 1.125rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .category-btn:hover {
+            background: #4caf50;
+        }
+
+        .flashcard-screen {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header-btn {
+            background: #c8e6c9;
+            border: 1px solid #81c784;
+            color: #2e7d32;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .progress-section {
+            margin-bottom: 16px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            color: #388e3c;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #c8e6c9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+            transition: width 0.3s ease;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 24px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #c8e6c9;
+            border: 2px solid #81c784;
+            border-radius: 12px;
+            padding: 24px;
+            backface-visibility: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-category {
+            font-size: 0.875rem;
+            color: #388e3c;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.125rem;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option {
+            padding: 12px;
+            border: 1px solid #a5d6a7;
+            border-radius: 6px;
+            background: white;
+            transition: background-color 0.2s;
+        }
+
+        .option:hover {
+            background: #e8f5e9;
+        }
+
+        .option-label {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .flip-instruction {
+            text-align: center;
+            color: #388e3c;
+            margin-bottom: 16px;
+        }
+
+        .answer-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .answer-circle {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 4px solid #81c784;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .answer-text {
+            padding: 16px;
+            background: white;
+            border: 1px solid #a5d6a7;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .answer-content {
+            font-size: 1.125rem;
+        }
+
+        .correct-answer {
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .card-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #a5d6a7;
+            margin-top: auto;
+        }
+
+        .nav-btn {
+            background: #66bb6a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #4caf50;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .card-counter {
+            color: #388e3c;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .home-title {
+                font-size: 2rem;
+            }
+            
+            .home-subtitle {
+                font-size: 1rem;
+            }
+            
+            .cat-icon {
+                font-size: 80px;
+            }
+            
+            .flashcard {
+                height: 600px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="home-screen">
+            <div class="home-card">
+                <div class="cat-icon">🐱</div>
+                <h1 class="home-title">Civil Service Exam Reviewer</h1>
+                <p class="home-subtitle">Interactive flashcards for Professional and Sub-Professional Levels</p>
+                <div class="category-buttons">
+                    <button class="category-btn" onclick="startCategory('mathematics')">Mathematics</button>
+                    <button class="category-btn" onclick="startCategory('english')">English</button>
+                    <button class="category-btn" onclick="startCategory('filipino')">Filipino</button>
+                    <button class="category-btn" onclick="startCategory('all')">All Questions</button>
+                </div>
+            </div>
+            <p style="margin-top: 24px; color: #388e3c; text-align: center;">
+                Created for Civil Service Exam preparation. Share this link with your friends!
+            </p>
+        </div>
+
+        <!-- Flashcard Screen -->
+        <div id="flashcardScreen" class="flashcard-screen">
+            <div class="header">
+                <button class="header-btn" onclick="goHome()">
+                    🏠 Home
+                </button>
+                <h1 id="categoryTitle" class="header-title">Mathematics</h1>
+                <button class="header-btn" onclick="resetProgress()">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span id="progressText">Progress: 0/10</span>
+                    <span id="cardCounter">Card: 1/10</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="flashcard-container">
+                <div id="flashcard" class="flashcard" onclick="flipCard()">
+                    <!-- Front of card -->
+                    <div id="cardFront" class="card-face">
+                        <div id="frontCategory" class="card-category">Mathematics - Word Problems</div>
+                        <h3 id="frontTitle" class="card-title">Question 1</h3>
+                        <p id="questionText" class="question-text">Loading question...</p>
+                        <div id="optionsContainer" class="options">
+                            <!-- Options will be populated by JavaScript -->
+                        </div>
+                        <div class="flip-instruction">
+                            <p>Click to reveal answer</p>
+                        </div>
+                        <div class="card-navigation">
+                            <button class="nav-btn" onclick="previousCard(event)" id="prevBtnFront">
+                                ← Previous
+                            </button>
+                            <span id="frontCounter" class="card-counter">1 / 10</span>
+                            <button class="nav-btn" onclick="nextCard(event)" id="nextBtnFront">
+                                Next →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Back of card -->
+                    <div id="cardBack" class="card-face card-back">
+                        <div id="backCategory" class="card-category">Mathematics - Word Problems</div>
+                        <h3 class="card-title">Answer</h3>
+                        <div class="answer-display">
+                            <div id="answerCircle" class="answer-circle">A</div>
+                        </div>
+                        <div class="answer-text">
+                            <p id="answerContent" class="answer-content">
+                                <span id="answerLabel" class="option-label">A.</span>
+                                <span id="answerText" class="correct-answer">Answer text here</span>
+                            </p>
+                        </div>
+                        <div class="flip-instruction">
+                            <p>Click to see question</p>
+                        </div>
+                        <div class="card-navigation">
+                            <button class="nav-btn" onclick="previousCard(event)" id="prevBtnBack">
+                                ← Previous
+                            </button>
+                            <span id="backCounter" class="card-counter">1 / 10</span>
+                            <button class="nav-btn" onclick="nextCard(event)" id="nextBtnBack">
+                                Next →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            {
+                id: 1,
+                category: "Mathematics",
+                subcategory: "Word Problems and Operations",
+                text: "If 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 = 55, then 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 = ?",
+                options: [
+                    { label: "a", text: "65" },
+                    { label: "b", text: "155" },
+                    { label: "c", text: "125" },
+                    { label: "d", text: "550" }
+                ],
+                answer: "b"
+            },
+            {
+                id: 2,
+                category: "Mathematics",
+                subcategory: "Word Problems and Operations",
+                text: "Evaluate: {16−(24−8) + 22×8−8}.",
+                options: [
+                    { label: "a", text: "40" },
+                    { label: "b", text: "48" },
+                    { label: "c", text: "64" },
+                    { label: "d", text: "168" }
+                ],
+                answer: "d"
+            },
+            {
+                id: 3,
+                category: "Mathematics",
+                subcategory: "Word Problems and Operations",
+                text: "Find the product: 800 x 125.",
+                options: [
+                    { label: "a", text: "925" },
+                    { label: "b", text: "1000" },
+                    { label: "c", text: "10 000" },
+                    { label: "d", text: "100 000" }
+                ],
+                answer: "d"
+            },
+            {
+                id: 4,
+                category: "Mathematics",
+                subcategory: "Word Problems and Operations",
+                text: "Find the quotient: 8 000 ÷ 125",
+                options: [
+                    { label: "a", text: "48" },
+                    { label: "b", text: "64" },
+                    { label: "c", text: "80" },
+                    { label: "d", text: "88" }
+                ],
+                answer: "b"
+            },
+            {
+                id: 5,
+                category: "Mathematics",
+                subcategory: "Word Problems and Operations",
+                text: "Find the sum: 299 + 943 + 398 + 101",
+                options: [
+                    { label: "a", text: "1,531" },
+                    { label: "b", text: "1,641" },
+                    { label: "c", text: "1,741" },
+                    { label: "d", text: "122,222" }
+                ],
+                answer: "b"
+            },
+            {
+                id: 6,
+                category: "English",
+                subcategory: "Synonyms",
+                text: "We should never be apathetic towards other people for we have a social responsibility to fulfill. (Choose the word closest in meaning to 'apathetic')",
+                options: [
+                    { label: "a", text: "indifferent" },
+                    { label: "b", text: "concerned" },
+                    { label: "c", text: "generous" },
+                    { label: "d", text: "worried" }
+                ],
+                answer: "a"
+            },
+            {
+                id: 7,
+                category: "English",
+                subcategory: "Synonyms",
+                text: "A good leader should be cognizant of the numerous issues that affect his constituents. (Choose the word closest in meaning to 'cognizant')",
+                options: [
+                    { label: "a", text: "aware" },
+                    { label: "b", text: "uninformed" },
+                    { label: "c", text: "confused" },
+                    { label: "d", text: "idealistic" }
+                ],
+                answer: "a"
+            },
+            {
+                id: 8,
+                category: "English",
+                subcategory: "Antonyms",
+                text: "Hanna accompanied her sister to the drugstore. (Choose the word opposite in meaning to 'accompanied')",
+                options: [
+                    { label: "a", text: "followed" },
+                    { label: "b", text: "let go on one's own" },
+                    { label: "c", text: "left behind" },
+                    { label: "d", text: "stopped" }
+                ],
+                answer: "b"
+            },
+            {
+                id: 9,
+                category: "English",
+                subcategory: "Correct Usage",
+                text: "Lily __________ remarkable poems even at her young age.",
+                options: [
+                    { label: "a", text: "rites" },
+                    { label: "b", text: "rights" },
+                    { label: "c", text: "writes" },
+                    { label: "d", text: "write" }
+                ],
+                answer: "c"
+            },
+            {
+                id: 10,
+                category: "Filipino",
+                subcategory: "Kasingkahulugan",
+                text: "Ang mga kawikaan ay nagbibigay ng aral sa mga tao. (Ano ang kasingkahulugan ng 'kawikaan'?)",
+                options: [
+                    { label: "a", text: "salawikain" },
+                    { label: "b", text: "kasabihan" },
+                    { label: "c", text: "bugtong" },
+                    { label: "d", text: "palaisipan" }
+                ],
+                answer: "a"
+            }
+        ];
+
+        // Application state
+        let currentCategory = 'all';
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let completedCards = new Set();
+
+        // Initialize the application
+        function init() {
+            showHomeScreen();
+        }
+
+        function showHomeScreen() {
+            document.getElementById('homeScreen').style.display = 'flex';
+            document.getElementById('flashcardScreen').style.display = 'none';
+        }
+
+        function showFlashcardScreen() {
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('flashcardScreen').style.display = 'block';
+        }
+
+        function startCategory(category) {
+            currentCategory = category;
+            
+            // Filter questions based on category
+            if (category === 'all') {
+                currentQuestions = [...questions];
+            } else {
+                currentQuestions = questions.filter(q => 
+                    q.category.toLowerCase() === category.toLowerCase()
+                );
+            }
+
+            // Reset state
+            currentIndex = 0;
+            isFlipped = false;
+            completedCards.clear();
+
+            // Update UI
+            updateCategoryTitle();
+            showFlashcardScreen();
+            displayCurrentCard();
+            updateProgress();
+        }
+
+        function updateCategoryTitle() {
+            const title = currentCategory === 'all' ? 'All Categories' : 
+                         currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
+            document.getElementById('categoryTitle').textContent = title;
+        }
+
+        function displayCurrentCard() {
+            if (currentQuestions.length === 0) return;
+
+            const question = currentQuestions[currentIndex];
+            
+            // Update front of card
+            document.getElementById('frontCategory').textContent = 
+                `${question.category} - ${question.subcategory}`;
+            document.getElementById('frontTitle').textContent = `Question ${question.id}`;
+            document.getElementById('questionText').textContent = question.text;
+
+            // Update options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            question.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <span class="option-label">${option.label}.</span>
+                    ${option.text}
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update back of card
+            document.getElementById('backCategory').textContent = 
+                `${question.category} - ${question.subcategory}`;
+            document.getElementById('answerCircle').textContent = question.answer.toUpperCase();
+            
+            const correctOption = question.options.find(opt => opt.label === question.answer);
+            document.getElementById('answerLabel').textContent = `${question.answer}.`;
+            document.getElementById('answerText').textContent = correctOption.text;
+
+            // Update counters
+            const counterText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('frontCounter').textContent = counterText;
+            document.getElementById('backCounter').textContent = counterText;
+
+            // Update navigation buttons
+            updateNavigationButtons();
+
+            // Reset flip state
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+
+        function updateNavigationButtons() {
+            const prevButtons = [document.getElementById('prevBtnFront'), document.getElementById('prevBtnBack')];
+            const nextButtons = [document.getElementById('nextBtnFront'), document.getElementById('nextBtnBack')];
+
+            prevButtons.forEach(btn => {
+                btn.disabled = currentIndex === 0;
+            });
+
+            nextButtons.forEach(btn => {
+                btn.disabled = currentIndex === currentQuestions.length - 1;
+            });
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            const flashcard = document.getElementById('flashcard');
+            
+            if (isFlipped) {
+                flashcard.classList.add('flipped');
+                if (!completedCards.has(currentIndex)) {
+                    completedCards.add(currentIndex);
+                    updateProgress();
+                }
+            } else {
+                flashcard.classList.remove('flipped');
+            }
+        }
+
+        function nextCard(event) {
+            event.stopPropagation();
+            if (currentIndex < currentQuestions.length - 1) {
+                currentIndex++;
+                displayCurrentCard();
+            }
+        }
+
+        function previousCard(event) {
+            event.stopPropagation();
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayCurrentCard();
+            }
+        }
+
+        function updateProgress() {
+            const completed = completedCards.size;
+            const total = currentQuestions.length;
+            const percentage = total > 0 ? (completed / total) * 100 : 0;
+
+            document.getElementById('progressText').textContent = `Progress: ${completed}/${total}`;
+            document.getElementById('cardCounter').textContent = `Card: ${currentIndex + 1}/${total}`;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        function resetProgress() {
+            currentIndex = 0;
+            isFlipped = false;
+            completedCards.clear();
+            displayCurrentCard();
+            updateProgress();
+        }
+
+        function goHome() {
+            showHomeScreen();
+        }
+
+        // Initialize the application when the page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
